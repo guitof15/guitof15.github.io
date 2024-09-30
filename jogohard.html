@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Ping Pong</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: linear-gradient(to right,#061c4a,#091865,
+            #141ba5); /
+        }
+
+        canvas {
+            border: 5px solid #3e414f; 
+        }
+    </style>
+</head>
+<body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        function setup() {
+            createCanvas(600, 400);
+        }
+
+        let xbolinha = 300;
+        let ybolinha = 200;
+        let velocidadax = 6; 
+        let velocidady = 6; 
+        let diametro = 33;
+        let raio = diametro / 2;
+
+        let alturaraquete = 70;
+        let larguraraquete = 5;
+        let yraquetejogador = 160; 
+        let yraquetecomputador = 160; 
+
+        let pontosjogador = 0; 
+        let pontoscomputador = 0; 
+        
+        function draw() {
+            background(0);
+
+            stroke("#2c2121"); 
+            strokeWeight(6); 
+            line(300, 0, 300, 400);
+
+            bolinha();
+            raquetejogador();
+            raquetecomputador();
+            teclajogador();
+            colisaoRaqueteJogador();
+            iaRaqueteComputador();
+            colisaoRaqueteComputador();
+
+            textSize(40); 
+            fill(255);
+            stroke(0);
+            text(` ${pontosjogador}`, 20, 40);
+            text(` ${pontoscomputador}`, width - 100, 40);
+        
+            
+        }
+
+        function bolinha() {
+            fill("#FFFFFF");
+            stroke("#FFFFFF");
+            circle(xbolinha, ybolinha, diametro);
+
+            xbolinha += velocidadax;
+            ybolinha += velocidady;
+
+            if (xbolinha > width - raio) {
+                pontosjogador++;
+                reiniciarbolinha();
+            } else if (xbolinha < raio) {
+                pontoscomputador++;
+                reiniciarbolinha();
+            }
+
+            if (ybolinha > height - raio || ybolinha < raio) {
+                velocidady *= -1;
+            }   
+        }    
+
+        function raquetejogador() {
+            fill("#061c4a");
+            stroke("#061c4a");
+            rect(20, yraquetejogador, larguraraquete, alturaraquete);
+        }
+
+        function raquetecomputador() {
+            fill("#840404");
+            stroke("#840404");
+            rect(width - 30, yraquetecomputador, larguraraquete, alturaraquete);
+        }
+
+        function teclajogador() {
+            if (keyIsDown(87)) { 
+                yraquetejogador -= 5;
+            }
+            if (keyIsDown(83)) { 
+                yraquetejogador += 5;
+            }
+
+            if (yraquetejogador < 0) {
+                yraquetejogador = 0;
+            }
+            if (yraquetejogador + alturaraquete > height) {
+                yraquetejogador = height - alturaraquete;
+            }
+        }
+
+        function colisaoRaqueteJogador() {
+            if (
+                xbolinha - raio <= 20 + larguraraquete && 
+                xbolinha > 20 &&
+                ybolinha > yraquetejogador &&            
+                ybolinha < yraquetejogador + alturaraquete 
+            ) {
+                velocidadax *= -1; 
+                xbolinha = 20 + larguraraquete + raio;
+            }
+        }
+
+        function iaRaqueteComputador() {
+            if (ybolinha < yraquetecomputador + alturaraquete / 2) {
+                yraquetecomputador -= 5;
+            } else {
+                yraquetecomputador += 5;
+            }
+
+            if (yraquetecomputador < 0) {
+                yraquetecomputador = 0;
+            } else if (yraquetecomputador + alturaraquete > height) {
+                yraquetecomputador = height - alturaraquete;
+            } 
+        }
+
+        function colisaoRaqueteComputador() {
+            if (xbolinha + raio >= width - 30 - larguraraquete &&
+                xbolinha < width - 30 &&
+                ybolinha > yraquetecomputador &&
+                ybolinha < yraquetecomputador + alturaraquete) {
+                velocidadax *= -1;
+                xbolinha = width - 30 - larguraraquete - raio;
+            }
+        }
+
+        function reiniciarbolinha() {
+            xbolinha = width / 2;
+            ybolinha = height / 2;
+            velocidadax *= -1; 
+            velocidady = 5 * (random() > 0.5 ? 1 : -1); 
+         }    
+       
+    </script>
+
+</body>
+</html>
